@@ -1,5 +1,5 @@
 # team-identification-extension
-Helps teams identify which team owns frontend components and backend calls.
+Helps teams identify which team owns which frontend elements and backend requests.
 
 
 ## The idea
