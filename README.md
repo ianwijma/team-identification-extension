@@ -41,3 +41,6 @@ The idea behind the remote config is to allow the managing of the unscrambling o
 
 This allows updates to happen without manually updating the settings, which at a larger scale becomes a hassle/impossible.
 
+## Dev Updated
+
+- [2024/07/28] - https://www.youtube.com/watch?v=C9mETaIYih0
