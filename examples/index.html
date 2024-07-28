@@ -54,14 +54,21 @@
 				aspernatur quibusdam. Ab perferendis error id voluptate illum est iste
 				nihil et incidunt possimus qui debitis quidem qui facilis provident.
 			</p>
+			<button team-identification-extension="team-button">
+				Sign up
+			</button>
 		</div>
         <script>
-            fetch('https://example.com', { headers: {
-                'x-team-identification-extension': 'team-example'
-            }})
-            fetch('https://extension-tips.glitch.me/tips.json', { headers: {
-                'x-team-identification-extension': 'team-tips'
-            }})
+            try {
+				fetch('https://example.com', { headers: {
+					'x-team-identification-extension': 'team-example'
+				}}).catch()
+				fetch('https://extension-tips.glitch.me/tips.json', { headers: {
+					'x-team-identification-extension': 'team-tips'
+				}}).catch()
+			} catch(err) {
+				// dont care
+			}
         </script>
 	</body>
 </html>

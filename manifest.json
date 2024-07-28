@@ -11,7 +11,7 @@
 	"options_page": "options/index.html",
 	"content_scripts": [
 		{
-			"js": ["content/content.js"],
+			"js": ["content/index.js"],
 			"matches": ["http://*/*", "https://*/*"]
 		}
 	],
