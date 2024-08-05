@@ -56,3 +56,7 @@ Build the extension:
 Add the extenion to your chrome browser of choice.
 
 Made a change? Build the extension again, reload extension, test out change.
+
+## Test page Devloo
+
+Serve example pages, run `npx serve` in the `/examples` dir.
