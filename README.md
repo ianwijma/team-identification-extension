@@ -44,3 +44,15 @@ This allows updates to happen without manually updating the settings, which at a
 ## Dev Updated
 
 - [2024/07/28] - https://www.youtube.com/watch?v=C9mETaIYih0
+
+## Local Devloop
+
+Build the extension:
+
+```bash
+    npm run dev
+```
+
+Add the extenion to your chrome browser of choice.
+
+Made a change? Build the extension again, reload extension, test out change.

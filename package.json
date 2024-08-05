@@ -1,0 +1,28 @@
+{
+  "name": "team-identification-extension",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next build --no-lint --no-mangling && npm run post-build-fixes",
+    "build": "next build && npm run post-build-fixes",
+    "post-build-fixes": "bin/post-build-fixes"
+  },
+  "dependencies": {
+    "@types/chrome": "^0.0.269",
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "copy-webpack-plugin": "^12.0.2",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.5",
+    "glob": "^11.0.0",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
