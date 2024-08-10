@@ -50,7 +50,7 @@ This allows updates to happen without manually updating the settings, which at a
 Build the extension:
 
 ```bash
-    npm run dev
+npm run dev
 ```
 
 Add the extenion to your chrome browser of choice.

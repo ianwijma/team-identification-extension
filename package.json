@@ -8,6 +8,7 @@
     "post-build-fixes": "bin/post-build-fixes"
   },
   "dependencies": {
+    "@tanstack/react-table": "^8.20.1",
     "@types/chrome": "^0.0.269",
     "next": "14.2.5",
     "react": "^18",
