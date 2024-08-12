@@ -16,7 +16,7 @@ In the front end, we use the default element property `team-identification-exten
 
 ## Backend
 
-In the backend, we use the default request header `x-team-identification-extension`, which can be configured in the local settings or remote config.
+In the backend, we use the default request and response header `x-team-identification-extension`, which can be configured in the local settings or remote config.
 
 ## Teams
 
@@ -44,6 +44,7 @@ This allows updates to happen without manually updating the settings, which at a
 ## Dev Updated
 
 - [2024/07/28] - https://www.youtube.com/watch?v=C9mETaIYih0
+- [2024/08/13] - https://www.youtube.com/watch?v=oDLWnxB50_s
 
 ## Local Devloop
 

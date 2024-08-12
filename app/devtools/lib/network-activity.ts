@@ -1,4 +1,4 @@
-import { isClient } from "@/app/lib/isClient";
+import { isClient } from "../../lib/isClient";
 
 export type NetworkRequest = chrome.devtools.network.Request;
 type CallbackFn<T> = (data: T) => void

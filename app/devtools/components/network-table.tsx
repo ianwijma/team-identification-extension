@@ -1,4 +1,8 @@
+import { Button, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { useMemo } from "react"
+import { useDevtoolsContext } from "../contexts/devtools";
+import { getTeamFromHeaders } from "../lib/network-tools";
+import { openTeamPopup } from "../lib/open-team-popup";
 import { NavigateNetworkEvent, NetworkEvent, RequestNetworkEvent } from "../lib/use-network-activity"
 
 type NavigateDataType = 'navigate';
@@ -25,16 +29,6 @@ type DataItem = {
 
 const getNameFromUrl = (url: URL): string => 
     url.pathname === '/' ? url.hostname : url.pathname.split('/').slice(-1)[0];
-
-const getTeamFromHeaders = (headers: any[]): string => {
-    const filterHeader = ({ name }: any) => name === 'x-team-identification-extension';
-
-    const [wantedHeader = {}] = headers.filter(filterHeader);
-
-    const { value } = wantedHeader;
-
-    return value;
-}
 
 const navigateToDataItem = (event: NavigateNetworkEvent): DataItem => {
     const { time, detail } = event;
@@ -70,8 +64,8 @@ const requestToDataItem = (event: RequestNetworkEvent): DataItem => {
     
     return {
         dataType: 'request',
-        requestTeamId: getTeamFromHeaders(requestHeaders),
-        responseTeamId: getTeamFromHeaders(responseHeaders),
+        requestTeamId: getTeamFromHeaders(requestHeaders) ?? '',
+        responseTeamId: getTeamFromHeaders(responseHeaders) ?? '',
         name: getNameFromUrl(url),
         path: url.pathname,
         url: url.toString(),
@@ -89,14 +83,19 @@ const requestToDataItem = (event: RequestNetworkEvent): DataItem => {
 }
 
 const networkEventToDataItem = (event: NetworkEvent): DataItem => 
-    event.type === 'navigated' ? navigateToDataItem(event) : requestToDataItem(event)
+    event.type === 'navigated' ? navigateToDataItem(event) : requestToDataItem(event);
+
+const dataFilter = (teamIdFilter: string) => (item: DataItem) => 
+    item.requestTeamId === teamIdFilter || item.responseTeamId === teamIdFilter
 
 type NetworkTableParams = {
-    networkEvents: NetworkEvent[]
+    teamIdFilter?: string | null
 }
 
-export const NetworkTable = ({ networkEvents }: NetworkTableParams) => {
-    const data = useMemo(() => networkEvents.map(networkEventToDataItem), [networkEvents])
+export const NetworkTable = ({ teamIdFilter = null }: NetworkTableParams) => {
+    const { networkEvents } = useDevtoolsContext();
+    const data = useMemo(() => networkEvents.map(networkEventToDataItem), [networkEvents]);
+    const filteredData = teamIdFilter ? data.filter(dataFilter(teamIdFilter)) : data
 
     const columns: Array<keyof DataItem> = [
         'dataType',
@@ -118,26 +117,24 @@ export const NetworkTable = ({ networkEvents }: NetworkTableParams) => {
     ]
 
     return (
-        <table className="w-full">
-            <thead>
-                <tr>
-                    {columns.map(column => <td>{column}</td>)}
-                </tr>
-            </thead>
-            <tbody id="network-table">
-                {data.map(item => (
-                    <tr>
+        <Table className="w-full" isCompact={true}>
+            <TableHeader>
+                {columns.map(column => <TableColumn>{column}</TableColumn>)}
+            </TableHeader>
+            <TableBody>
+                {filteredData.map((item, index) => (
+                    <TableRow key={index}>
                         {columns.map(column => {
                             const value = item[column];
                             if (column === 'requestTeamId' || column === 'responseTeamId' && value) {
-                                return <td><button>{value}</button></td>
+                                return <TableCell><Button onClick={() => openTeamPopup(value as string)}>{value}</Button></TableCell>
                             }
 
-                            return <td>{value}</td>
+                            return <TableCell>{value}</TableCell>
                         })}
-                    </tr>
+                    </TableRow>
                 ))}
-            </tbody>
-        </table>
+            </TableBody>
+        </Table>
     )
 }

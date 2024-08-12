@@ -1,7 +1,10 @@
+import { Suspense } from "react";
 import { PopupContent } from "./content";
 
 export const generateStaticParams = async () => ([]);
 
-const Popup = () => <PopupContent />
+const Popup = () => <Suspense>
+    <PopupContent />
+</Suspense>
 
 export default Popup;

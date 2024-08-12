@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { getNetworkActivity, NetworkRequest } from "./network-activity"
 
 export type RequestNetworkEvent = {
@@ -18,26 +18,34 @@ export type NetworkEvent = RequestNetworkEvent | NavigateNetworkEvent;
 const networkActivity = getNetworkActivity();
 
 type UseNetworkActivityParams = {
-    resetOnNavigate?: boolean
+    resetOnNavigate?: boolean;
+    trackActivity?: boolean;
 }
-export const useNetworkActivity = ({ resetOnNavigate = false }: UseNetworkActivityParams = {}) => {
+export const useNetworkActivity = ({ resetOnNavigate = true, trackActivity = true }: UseNetworkActivityParams = {}) => {
     const [ networkEvents, setNetworkEvents ] = useState<NetworkEvent[]>([]);
-    const addNetworkEvent = (networkEvent: NetworkEvent) => setNetworkEvents([...networkEvents, networkEvent]);
+
+    // TODO: Check why trackActivity does not stop adding / updating network events...  
+    const addNetworkEvent = (networkEvent: NetworkEvent) => trackActivity && setNetworkEvents([...networkEvents, networkEvent]);
+    
     const clearNetworkEvents = () => setNetworkEvents([]);
 
-    const addNavigated = (navigatedUrl: string) => addNetworkEvent({
+    const addNavigated = (navigatedUrl: string) =>  addNetworkEvent({
         type: 'navigated',
         time: Date.now(),
         detail: navigatedUrl
     });
 
-    const addRequest = (request: NetworkRequest) => addNetworkEvent({
+    const addRequest = (request: NetworkRequest) =>  addNetworkEvent({
         type: 'request',
         time: Date.now(),
         detail: request
     });
 
     useEffect(() => {
+        networkActivity.removeNavigatedListener(clearNetworkEvents);
+        networkActivity.removeNavigatedListener(addNavigated);
+        networkActivity.removeRequestListener(addRequest);     
+
         if (resetOnNavigate) {
             networkActivity.addNavigatedListener(clearNetworkEvents);
         } else {
@@ -46,11 +54,12 @@ export const useNetworkActivity = ({ resetOnNavigate = false }: UseNetworkActivi
         
         networkActivity.addRequestListener(addRequest);
 
+        // TODO: this makes us stop listening to requests, causing it to miss some calls...
         return () => {
             networkActivity.removeNavigatedListener(clearNetworkEvents);
             networkActivity.removeNavigatedListener(addNavigated);
-            networkActivity.removeRequestListener(addRequest);
-        }
+            networkActivity.removeRequestListener(addRequest);            
+        };
     }, [networkEvents, resetOnNavigate]);
 
     return { networkEvents, clearNetworkEvents };

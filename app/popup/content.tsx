@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+
 
 export const PopupContent = () => {
-    const [count, setCount] = useState(0);
+    const searchParams = useSearchParams();
+    const teamId = searchParams.get('teamId');
 
     return (
         <div>
-            Popup
-            {' '}
-            <button onClick={() => setCount(count+1)}>Count: {count}</button>
+            {teamId}
         </div>
     )
 }

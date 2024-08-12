@@ -47,10 +47,10 @@ const startHighlight = async () => {
 
 	const handleClick = (event) => {
 		event.preventDefault();
-		console.log(
-			'team',
-			event.currentTarget.getAttribute('team-identification-extension'),
-		);
+		
+		const teamId = event.currentTarget.getAttribute('team-identification-extension');
+
+		chrome.runtime.sendMessage({ teamId });
 	};
 
 	const resetElement = () => {

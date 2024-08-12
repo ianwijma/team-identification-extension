@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+        <script>
+            try {
+				(async () => {
+					const TEAM_AMOUNT = 25;
+					const REQUEST_PER_TEAM = 3;
+
+					function makeid(length) {
+						let result = '';
+						const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+						const charactersLength = characters.length;
+						let counter = 0;
+						while (counter < length) {
+						result += characters.charAt(Math.floor(Math.random() * charactersLength));
+						counter += 1;
+						}
+						return result;
+					}
+
+					const teams = [];
+
+					for (let index = 0; index < TEAM_AMOUNT; index++) {
+						const name = `Team ${index} ${makeid(10)}`
+						teams.push(name);
+					}
+
+					// Requests per team
+					for (let index = 0; index < REQUEST_PER_TEAM; index++) {
+						for (const teamIndex in teams) {
+							const team = teams[teamIndex];
+							try {
+								await fetch('http://localhost:3000/network', { headers: {
+									'x-team-identification-extension': team
+								}});
+
+								await (new Promise(resolve => setTimeout(() => resolve(), 100)));
+							} catch (err) {
+								// Don't care
+							}
+						}
+					}
+				})()
+			} catch(err) {
+				// Don't care
+			}
+        </script>
+	</body>
+</html>
