@@ -27,7 +27,6 @@ const handleNavigated = (navigatedUrl: string)  =>
 const handleRequest = (event: NetworkRequest)  => 
     eventBus.dispatchEvent(new CustomEvent(REQUEST_EVENT, { detail: event }))
 
-
 let startedEmitting = false;
 
 const ensureEmitting = () => {

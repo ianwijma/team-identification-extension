@@ -81,8 +81,6 @@ const TeamCard = ({ teamId, requestCount, responseCount }: TeamCardProps) => {
 export const TeamOverview = () => {
     const { networkEvents } = useDevtoolsContext();
     const teamMap = networkEvents.reduce((teamMap, networkEvent) => {
-        const { type, detail } = networkEvent;
-
         const addTeamMap = (teamId: string, target: keyof TeamObject) => {
             if(!(teamId in teamMap)) {
                 teamMap[teamId] = {
@@ -98,17 +96,16 @@ export const TeamOverview = () => {
             teamMap[teamId][target]++
         }
 
-        if (type === 'request') {
-            const { request, response } = detail;
-            const { headers: requestHeaders } = request;
-            const { headers: responseHeaders } = response;
+        const { network } = networkEvent;
+        const { request, response } = network;
+        const { headers: requestHeaders } = request;
+        const { headers: responseHeaders } = response;
 
-            const requestTeamId = getTeamFromHeaders(requestHeaders);
-            if (requestTeamId) addTeamMap(requestTeamId, 'requestCount')
+        const requestTeamId = getTeamFromHeaders(requestHeaders);
+        if (requestTeamId) addTeamMap(requestTeamId, 'requestCount')
 
-            const responseTeamId = getTeamFromHeaders(responseHeaders);
-            if (responseTeamId) addTeamMap(responseTeamId, 'responseCount')
-        }
+        const responseTeamId = getTeamFromHeaders(responseHeaders);
+        if (responseTeamId) addTeamMap(responseTeamId, 'responseCount')
 
         return teamMap;
     }, {} as TeamMap)

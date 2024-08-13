@@ -38,7 +38,6 @@ export const DevtoolsContextProvider = ({ children }: PropsWithChildren<Partial<
         trackActivity: trackEvents
      });
 
-
     const overwriteContext = {
         preserveEvents, 
         setPreserveEvents,

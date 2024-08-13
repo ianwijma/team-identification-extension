@@ -3,7 +3,7 @@ import { useMemo } from "react"
 import { useDevtoolsContext } from "../contexts/devtools";
 import { getTeamFromHeaders } from "../lib/network-tools";
 import { openTeamPopup } from "../lib/open-team-popup";
-import { NavigateNetworkEvent, NetworkEvent, RequestNetworkEvent } from "../lib/use-network-activity"
+import { NetworkEvent } from "../lib/use-network-activity"
 
 type NavigateDataType = 'navigate';
 type RequestDataType = 'request';
@@ -30,33 +30,9 @@ type DataItem = {
 const getNameFromUrl = (url: URL): string => 
     url.pathname === '/' ? url.hostname : url.pathname.split('/').slice(-1)[0];
 
-const navigateToDataItem = (event: NavigateNetworkEvent): DataItem => {
-    const { time, detail } = event;
-    const url = new URL(detail);
-
-    return {
-        dataType: 'navigate',
-        requestTeamId: '',
-        responseTeamId: '',
-        name: getNameFromUrl(url),
-        path: url.pathname,
-        url: url.toString(),
-        method: 'GET',
-        status: '',
-        protocol: '',
-        scheme: url.protocol,
-        domain: url.hostname,
-        type: 'document',
-        size: '',
-        connectionId: '',
-        duration: 0,
-        time,
-    }
-}
-
-const requestToDataItem = (event: RequestNetworkEvent): DataItem => {
-    const { time, detail } = event;
-    const { request, response, _protocol, _resourceType, _request_id, time: duration } = detail;
+const networkEventToDataItem = (event: NetworkEvent): DataItem => {
+    const { time, network } = event;
+    const { request, response, _protocol, _resourceType, _request_id, time: duration } = network;
     const { method, url: requestUrl, headers: requestHeaders } = request;
     const { bodySize, status, headers: responseHeaders } = response;
 
@@ -81,9 +57,6 @@ const requestToDataItem = (event: RequestNetworkEvent): DataItem => {
         time,
     }
 }
-
-const networkEventToDataItem = (event: NetworkEvent): DataItem => 
-    event.type === 'navigated' ? navigateToDataItem(event) : requestToDataItem(event);
 
 const dataFilter = (teamIdFilter: string) => (item: DataItem) => 
     item.requestTeamId === teamIdFilter || item.responseTeamId === teamIdFilter
