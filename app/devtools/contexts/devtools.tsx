@@ -30,7 +30,7 @@ const DevtoolsContext = createContext<Context>(defaultContext);
 
 export const useDevtoolsContext = () => useContext(DevtoolsContext);
 
-export const DevtoolsContextProvider = ({ children }: PropsWithChildren<Partial<Context>>) => {
+export const DevtoolsContextProvider = ({ children }: PropsWithChildren) => {
     const [ preserveEvents, setPreserveEvents ] = useState(false);
     const [ trackEvents, setTrackEvents ] = useState(true);
     const { networkEvents, clearNetworkEvents } = useNetworkActivity({ 
@@ -38,7 +38,7 @@ export const DevtoolsContextProvider = ({ children }: PropsWithChildren<Partial<
         trackActivity: trackEvents
      });
 
-    const overwriteContext = {
+    const overwriteContext: Partial<Context> = {
         preserveEvents, 
         setPreserveEvents,
         trackEvents, 

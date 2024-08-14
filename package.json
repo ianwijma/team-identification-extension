@@ -17,6 +17,7 @@
     "@nextui-org/theme": "^2.2.9",
     "@tanstack/react-table": "^8.20.1",
     "@types/chrome": "^0.0.269",
+    "formik": "^2.4.6",
     "framer-motion": "^11.3.24",
     "next": "14.2.5",
     "react": "^18",

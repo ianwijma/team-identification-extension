@@ -6,7 +6,7 @@
 	"version": "1.0",
 	"action": {
 		"default_popup": "popup.html",
-		"default_icon": "popup.png"
+		"default_icon": "team-identification-extension.png"
 	},
 	"options_page": "options.html",
 	"content_scripts": [

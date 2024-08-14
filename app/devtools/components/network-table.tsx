@@ -10,8 +10,8 @@ type RequestDataType = 'request';
 
 type DataItem = {
     dataType: NavigateDataType | RequestDataType;
-    requestTeamId: string;
-    responseTeamId: string;
+    requestTeamId: string | null;
+    responseTeamId: string | null;
     name: string;
     path: string;
     url: string;
@@ -40,8 +40,8 @@ const networkEventToDataItem = (event: NetworkEvent): DataItem => {
     
     return {
         dataType: 'request',
-        requestTeamId: getTeamFromHeaders(requestHeaders) ?? '',
-        responseTeamId: getTeamFromHeaders(responseHeaders) ?? '',
+        requestTeamId: getTeamFromHeaders(requestHeaders),
+        responseTeamId: getTeamFromHeaders(responseHeaders),
         name: getNameFromUrl(url),
         path: url.pathname,
         url: url.toString(),
