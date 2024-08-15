@@ -46,6 +46,7 @@ This allows updates to happen without manually updating the settings, which at a
 - [2024/07/28] - https://www.youtube.com/watch?v=C9mETaIYih0
 - [2024/08/13] - https://www.youtube.com/watch?v=oDLWnxB50_s
 - [2024/08/14] - https://www.youtube.com/watch?v=Xqe2X8nJgJo
+- [2024/08/15] - https://www.youtube.com/watch?v=K44UW_Q94WA
 
 ## Local Devloop
 
