@@ -6,17 +6,39 @@
 	"version": "1.0",
 	"action": {
 		"default_popup": "popup.html",
-		"default_icon": "team-identification-extension.png"
+		"default_icon": {
+			"16": "team-identification-extension_16.png",
+			"24": "team-identification-extension_24.png",
+			"32": "team-identification-extension_32.png"
+		}
+	},
+	"icons": {
+		"16": "team-identification-extension_16.png",
+		"32": "team-identification-extension_32.png",
+		"48": "team-identification-extension_48.png",
+		"128": "team-identification-extension_128.png",
+		"256": "team-identification-extension_256.png"
 	},
 	"options_page": "options.html",
 	"content_scripts": [
 		{
-			"js": ["content.js"],
-			"matches": ["http://*/*", "https://*/*"]
+			"js": [
+				"content.js"
+			],
+			"matches": [
+				"http://*/*",
+				"https://*/*"
+			]
 		}
 	],
-	"permissions": ["storage", "alarms"],
-	"host_permissions": ["http://*/*", "https://*/*"],
+	"permissions": [
+		"storage",
+		"alarms"
+	],
+	"host_permissions": [
+		"http://*/*",
+		"https://*/*"
+	],
 	"background": {
 		"service_worker": "background.js"
 	},

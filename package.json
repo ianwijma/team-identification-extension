@@ -1,5 +1,6 @@
 {
   "name": "team-identification-extension",
+  "description": "Helps teams identify which team owns which frontend elements and backend requests.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
