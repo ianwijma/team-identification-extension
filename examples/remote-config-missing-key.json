@@ -1,0 +1,11 @@
+{
+    "requestHeaderName": "some-remote-request-header-name",
+    "responseHeaderName": "some-remote-response-header-name",
+    "teams": [
+        {
+            "alias": "remote-0",
+            "name": "Remote Zero",
+            "description": "This is Remote Zero's Description of awesomeness"
+        }
+    ]
+}

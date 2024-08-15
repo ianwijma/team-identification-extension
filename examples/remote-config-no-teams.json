@@ -1,0 +1,5 @@
+{
+    "elementAttributeName": "some-remote-attribute-name",
+    "requestHeaderName": "some-remote-request-header-name",
+    "responseHeaderName": "some-remote-response-header-name"
+}

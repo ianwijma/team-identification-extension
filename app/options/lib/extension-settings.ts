@@ -43,11 +43,11 @@ export const setExtensionSettings = (settings: ExtensionSettings): Promise<Exten
     )
 });
 
-export const resetExtensionSettings = (): Promise<void> => new Promise((resolve) => {
+export const resetExtensionSettings = (): Promise<ExtensionSettings> => new Promise((resolve) => {
     console.log('[settings] resetting');
     chrome.storage.sync.set(
         defaultExtensionSettings,
-        () => resolve()
+        () => resolve(defaultExtensionSettings)
     )
 });
 

@@ -1,0 +1,17 @@
+{
+    "elementAttributeName": "some-remote-attribute-name",
+    "requestHeaderName": "some-remote-request-header-name",
+    "responseHeaderName": "some-remote-response-header-name",
+    "teams": [
+        {
+            "alias": "remote-0",
+            "name": "Remote Zero",
+            "description": "This is Remote Zero's Description of awesomeness"
+        },
+        {
+            "alias": "remote-1",
+            "name": "Remote One",
+            "description": "This is Remote One's Description of awesomeness"
+        }
+    ]
+}

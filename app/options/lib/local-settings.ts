@@ -11,7 +11,7 @@ export const localSettingsSchema = object({
         object({
             alias: string().label('Team Alias').min(5).max(255).required(),
             name: string().label('Team Name').min(5).max(255).required(),
-            description: string().label('Team Description')
+            description: string().label('Team Description').ensure()
         })
     )
 });
