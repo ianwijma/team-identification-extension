@@ -1,6 +1,7 @@
 import { Button, Checkbox, Divider, Input, Skeleton } from "@nextui-org/react";
 import { Field, Form, Formik } from "formik";
 import { useSettingsContext } from "../context/settings";
+import { remoteConfigSchema } from "../lib/remote-config";
 import { FormWrapper } from "./form-wrapper";
 
 const RemoteFormSkeleton = () => {
@@ -37,25 +38,37 @@ export const RemoteForm = () => {
     return (
         <FormWrapper>
             <Formik 
+                validationSchema={remoteConfigSchema}
                 initialValues={{ useRemote, remoteUrl }} 
                 onSubmit={(values, actions) => {
                     updateSettings({ ...settings, ...values });
                     actions.setSubmitting(false);
                 }}
             >
-                {() => (
+                {({ errors, touched }) => (
                     <Form>
                         <Field name='useRemote'>
                             {
                                 ({field}: any) => 
-                                    <Checkbox {...field} defaultSelected={field.value}>Use Remote Configuration Url</Checkbox>
+                                    <Checkbox  
+                                        errorMessage={errors.useRemote} 
+                                        isInvalid={errors.useRemote && touched.useRemote} 
+                                        defaultSelected={field.value}
+                                        {...field}>
+                                            Use Remote Configuration
+                                    </Checkbox>
                             }
                         </Field>
                         <Divider className="my-3" />
                         <Field name='remoteUrl'>
                             {
                                 ({field}: any) => 
-                                    <Input label="Remote Configuration Url" type='url' {...field}/>
+                                    <Input 
+                                        errorMessage={errors.remoteUrl} 
+                                        isInvalid={errors.remoteUrl && touched.remoteUrl} 
+                                        label="Remote Configuration Url" 
+                                        type='url' 
+                                        {...field}/>
                              }
                         </Field>
                         <Divider className="my-3" />

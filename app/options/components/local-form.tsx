@@ -2,6 +2,7 @@ import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Input, S
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useSettingsContext } from "../context/settings";
 import { TeamMap } from "../lib/extension-settings";
+import { localSettingsSchema } from "../lib/local-settings";
 import { FormWrapper } from "./form-wrapper";
 
 const RemoteConfigNotice = () => (
@@ -14,7 +15,7 @@ const RemoteConfigNotice = () => (
     </Card>
 )
 
-const ConfigurationFormSkeleton = ({ useRemote }: { useRemote: boolean }) => {
+const LocalFormSkeleton = ({ useRemote }: { useRemote: boolean }) => {
     return (
         <>
             <Skeleton className="rounded-lg">
@@ -36,14 +37,14 @@ const ConfigurationFormSkeleton = ({ useRemote }: { useRemote: boolean }) => {
     )
 }
 
-export const ConfigurationForm = () => {
+export const LocalForm = () => {
     const { loading, settings, updateSettings } = useSettingsContext();
     const { useRemote } = settings
 
     if (loading) {
         return (
             <FormWrapper>
-                <ConfigurationFormSkeleton useRemote={useRemote} />
+                <LocalFormSkeleton useRemote={useRemote} />
             </FormWrapper>
         )
     }
@@ -53,6 +54,7 @@ export const ConfigurationForm = () => {
     return (
         <FormWrapper>
             <Formik 
+                validationSchema={localSettingsSchema}
                 initialValues={{ elementAttributeName, requestHeaderName, responseHeaderName, teams: Object.values(teamMap) }} 
                 onSubmit={(values, actions) => {
                     const { teams, ...restValue } = values;
@@ -68,26 +70,41 @@ export const ConfigurationForm = () => {
                     actions.setSubmitting(false);
 
                 }}>
-                {({ values }) => (
+                {({ values, errors, touched }) => (
                     <Form>
                         <Field name='elementAttributeName'>
                             {
                                 ({field}: any) => 
-                                    <Input disabled={useRemote} label="Element attribute name" {...field}/>
+                                    <Input 
+                                        errorMessage={errors.elementAttributeName} 
+                                        isInvalid={errors.elementAttributeName && touched.elementAttributeName} 
+                                        disabled={useRemote} 
+                                        label="Element attribute name" 
+                                        {...field}/>
                             }
                         </Field>
                         <Divider className="my-3" />
                         <Field name='requestHeaderName'>
                             {
                                 ({field}: any) => 
-                                    <Input disabled={useRemote} label="Request header name" {...field}/>
+                                    <Input 
+                                        errorMessage={errors.requestHeaderName} 
+                                        isInvalid={errors.requestHeaderName && touched.requestHeaderName} 
+                                        disabled={useRemote} 
+                                        label="Request header name" 
+                                        {...field}/>
                             }
                         </Field>
                         <Divider className="my-3" />
                         <Field name='responseHeaderName'>
                             {
                                 ({field}: any) => 
-                                    <Input disabled={useRemote} label="Response header name" {...field}/>
+                                    <Input 
+                                        errorMessage={errors.responseHeaderName} 
+                                        isInvalid={errors.responseHeaderName && touched.responseHeaderName} 
+                                        disabled={useRemote} 
+                                        label="Response header name"
+                                        {...field}/>
                             }
                         </Field>
                         <Divider className="my-3" />
@@ -107,14 +124,30 @@ export const ConfigurationForm = () => {
                                                             <Field name={`teams[${index}].alias`}>
                                                                 {
                                                                     ({field}: any) => 
-                                                                        <Input disabled={useRemote} className="grow" label="Team Alias" {...field}/>
+                                                                        <Input 
+                                                                            // @ts-ignore
+                                                                            errorMessage={errors?.teams?.[index]?.alias} 
+                                                                            // @ts-ignore
+                                                                            isInvalid={errors?.teams?.[index]?.alias && touched?.teams?.[index]?.alias} 
+                                                                            disabled={useRemote} 
+                                                                            className="grow" 
+                                                                            label="Team Alias" 
+                                                                            {...field}/>
                                                                 }
                                                             </Field>
                                                             <Divider className="mx-3" orientation="vertical" />
                                                             <Field name={`teams[${index}].name`}>
                                                                 {
                                                                     ({field}: any) => 
-                                                                        <Input disabled={useRemote} className="grow" label="Team Name" {...field}/>
+                                                                        <Input 
+                                                                            // @ts-ignore
+                                                                            errorMessage={errors?.teams?.[index]?.name} 
+                                                                            // @ts-ignore
+                                                                            isInvalid={errors?.teams?.[index]?.name && touched?.teams?.[index]?.name} 
+                                                                            disabled={useRemote} 
+                                                                            className="grow" 
+                                                                            label="Team Name" 
+                                                                            {...field}/>
                                                                 }
                                                             </Field>
                                                         </div>
@@ -122,7 +155,14 @@ export const ConfigurationForm = () => {
                                                         <Field name={`teams[${index}].description`}>
                                                             {
                                                                 ({field}: any) => 
-                                                                    <Textarea disabled={useRemote} label="Team Description" {...field}/>
+                                                                    <Textarea 
+                                                                        // @ts-ignore
+                                                                        errorMessage={errors?.teams?.[index]?.description} 
+                                                                        // @ts-ignore
+                                                                        isInvalid={errors?.teams?.[index]?.description && touched?.teams?.[index]?.description} 
+                                                                        disabled={useRemote} 
+                                                                        label="Team Description" 
+                                                                        {...field}/>
                                                             }
                                                         </Field>
                                                     </CardBody>
@@ -166,6 +206,7 @@ export const ConfigurationForm = () => {
                             )}
                         />
                         <Divider className="my-3" />
+
                         { useRemote ? <RemoteConfigNotice /> : <Button type="submit">Save</Button> }
                     </Form>
                 )}

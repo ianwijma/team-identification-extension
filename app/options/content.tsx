@@ -1,7 +1,7 @@
 'use client';
 
 import { Tab, Tabs } from "@nextui-org/react";
-import { ConfigurationForm } from "./components/configuration-form";
+import { LocalForm } from "./components/local-form";
 import { RemoteForm } from "./components/remote-form";
 import { SettingsContextProvider } from "./context/settings";
 
@@ -13,7 +13,7 @@ export const OptionsContent = () => {
                     <RemoteForm />
                 </Tab>
                 <Tab key='local' title="Local Settings">
-                    <ConfigurationForm />
+                    <LocalForm />
                 </Tab>
             </Tabs>
         </SettingsContextProvider>
