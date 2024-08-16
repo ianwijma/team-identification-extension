@@ -66,6 +66,7 @@ Serve example pages, run `npx serve` in the `/examples` dir.
 
 ## Projects used
 
+Chrome Extension: https://developer.chrome.com/docs/extensions/reference
 NextJS: https://nextjs.org/
 NextUI: https://nextui.org/
 FontAwesome: https://fontawesome.com/
