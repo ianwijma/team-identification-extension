@@ -26,7 +26,6 @@ export const TabPopup = ({ currentTab }: TabPopupParam) => {
     useEffect(() => {
         if (tabId) {
             chrome.tabs.sendMessage(tabId, { type: 'get-picker' }, function({ elementPickerState = false }){
-                console.log('Getting picker', { elementPickerState })
                 setElementPicker(elementPickerState)
             });
         }

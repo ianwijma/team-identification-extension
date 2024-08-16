@@ -109,8 +109,6 @@ const main = async () => {
 	const highlighter =	await startHighlight();
 
 	chrome.runtime.onMessage.addListener(function ({ type, elementPicker, attributeName }, sender, sendResponse) {
-		console.log('listener', { type, elementPicker })
-
 		if (type === 'set-picker') {
 			elementPicker ? highlighter.start(attributeName) : highlighter.stop()
 		}
