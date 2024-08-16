@@ -1,6 +1,5 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
-import { ValidationError } from "yup";
-import { defaultExtensionSettings, ExtensionSettings, getExtensionSettings, resetExtensionSettings, setExtensionSettings, TeamMap } from "../lib/extension-settings";
+import { defaultExtensionSettings, ExtensionSettings, getExtensionSettings, resetExtensionSettings, setExtensionSettings, TeamMap } from "../../lib/extension-settings";
 import { localSettingsSchema } from "../lib/local-settings";
 
 type SetFunction<T> = (newValue: T) => void

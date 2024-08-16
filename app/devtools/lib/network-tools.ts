@@ -1,5 +1,5 @@
-export const getTeamFromHeaders = (headers: any[]): string | null => {
-    const filterHeader = ({ name }: any) => name === 'x-team-identification-extension';
+export const getTeamFromHeaders = (headers: any[], headerName: string): string | null => {
+    const filterHeader = ({ name }: any) => name === headerName;
 
     const [wantedHeader = {}] = headers.filter(filterHeader);
 

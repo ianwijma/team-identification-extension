@@ -1,16 +1,31 @@
 {
-    "elementAttributeName": "some-remote-attribute-name",
-    "requestHeaderName": "some-remote-request-header-name",
-    "responseHeaderName": "some-remote-response-header-name",
+    "elementAttributeName": "remote-attribute",
+    "requestHeaderName": "x-remote-request-header",
+    "responseHeaderName": "x-remote-response-header",
     "teams": [
         {
-            "alias": "remote-0",
-            "name": "Remote Zero",
-            "description": "This is Remote Zero's Description of awesomeness"
+            "alias": "fe-t34m-jd",
+            "name": "[FE] Team John Doe",
+            "description": "This frontend team owns the John Doe elements"
         },
         {
-            "alias": "remote-1",
-            "name": "Remote One",
+            "alias": "fe-t34m-hw",
+            "name": "[FE] Team Hello World",
+            "description": "This frontend team owns the Hello World elements"
+        },
+        {
+            "alias": "fe-t34m-su",
+            "name": "[FS] Team Sign Up",
+            "description": "This full stack team owns the sign up button"
+        },
+        {
+            "alias": "be-t34m-example",
+            "name": "[BE] Team Example.com",
+            "description": "This backend team owns the sign up button"
+        },
+        {
+            "alias": "be-t34m-tips",
+            "name": "[BE] Team Tips.json",
             "description": "This is Remote One's Description of awesomeness"
         }
     ]

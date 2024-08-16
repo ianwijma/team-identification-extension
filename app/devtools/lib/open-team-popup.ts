@@ -1,4 +1,6 @@
-export const openTeamPopup = (teamId: string) => {
-    chrome.action.setPopup({ popup: `popup.html?teamId=${teamId}` });
+import { TeamAlias } from "../../lib/extension-settings";
+
+export const openTeamPopup = (teamAlias: TeamAlias) => {
+    chrome.action.setPopup({ popup: `popup.html?teamAlias=${teamAlias}` });
     chrome.action.openPopup();
 }

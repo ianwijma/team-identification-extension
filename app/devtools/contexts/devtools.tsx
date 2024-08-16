@@ -1,5 +1,6 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { createContext, PropsWithChildren } from "react";
+import { defaultExtensionSettings, ExtensionSettings, getExtensionSettings } from "../../lib/extension-settings";
 import { NetworkEvent, useNetworkActivity } from "../lib/use-network-activity";
 
 type SetFunction<T> = (newValue: T) => void
@@ -11,7 +12,8 @@ type Context = {
     trackEvents: boolean,
     setTrackEvents: SetFunction<boolean>,
     networkEvents: NetworkEvent[],
-    clearNetworkEvents: BlankFunction
+    clearNetworkEvents: BlankFunction,
+    extensionSettings: ExtensionSettings,
 }
 
 const mockSetFn: SetFunction<any> = (newValue) => {};
@@ -24,6 +26,7 @@ const defaultContext: Context = {
     setTrackEvents: mockSetFn,
     networkEvents: [],
     clearNetworkEvents: mockBlankFn,
+    extensionSettings: defaultExtensionSettings,
 }
 
 const DevtoolsContext = createContext<Context>(defaultContext);
@@ -37,6 +40,14 @@ export const DevtoolsContextProvider = ({ children }: PropsWithChildren) => {
         resetOnNavigate: !preserveEvents,
         trackActivity: trackEvents
      });
+     const [extensionSettings, setExtensionSettings] = useState<ExtensionSettings>(defaultExtensionSettings);
+
+     useEffect(() => {
+         (async () => {
+            const settings = await getExtensionSettings();
+            setExtensionSettings(settings);
+         })()
+     }, []);
 
     const overwriteContext: Partial<Context> = {
         preserveEvents, 
@@ -44,7 +55,8 @@ export const DevtoolsContextProvider = ({ children }: PropsWithChildren) => {
         trackEvents, 
         setTrackEvents,
         networkEvents,
-        clearNetworkEvents
+        clearNetworkEvents,
+        extensionSettings
     };
 
     return (

@@ -1,7 +1,7 @@
 import { Button, Card, CardBody, CardFooter, CardHeader, Chip, Divider, Input, Skeleton, Textarea } from "@nextui-org/react";
 import { Field, FieldArray, Form, Formik } from "formik";
 import { useSettingsContext } from "../context/settings";
-import { TeamMap } from "../lib/extension-settings";
+import { TeamMap } from "../../lib/extension-settings";
 import { localSettingsSchema } from "../lib/local-settings";
 import { FormWrapper } from "./form-wrapper";
 

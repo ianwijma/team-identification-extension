@@ -1,7 +1,7 @@
 import 'react';
 
-type TeamAlias = string;
-type Team = {
+export type TeamAlias = string;
+export type Team = {
     alias: TeamAlias,
     name: string,
     description: string,

@@ -1,10 +1,10 @@
 const px = (unit) => `${unit}px`;
 
-const findElement = (element) => {
-	if (element.getAttribute('team-identification-extension')) {
+const findElement = (element, attributeName) => {
+	if (element.getAttribute(attributeName)) {
 		return element;
 	} else {
-		const foundElement = element.closest('[team-identification-extension]');
+		const foundElement = element.closest(`[${attributeName}]`);
 		if (foundElement) {
 			return foundElement;
 		}
@@ -44,13 +44,15 @@ const startHighlight = async () => {
 	const highlighter = getHighlighter();
 
 	let currentElement = null;
+	let started = false;
+	let attributeName = 'team-identification-extension';
 
 	const handleClick = (event) => {
 		event.preventDefault();
 		
-		const teamId = event.currentTarget.getAttribute('team-identification-extension');
+		const teamAlias = event.currentTarget.getAttribute(attributeName);
 
-		chrome.runtime.sendMessage({ teamId });
+		chrome.runtime.sendMessage({ teamAlias });
 	};
 
 	const resetElement = () => {
@@ -78,18 +80,45 @@ const startHighlight = async () => {
 		resetElement();
 	};
 
+	const isStarted = () => started;
+	
+	const start = (newAttributeName) => {
+		attributeName = newAttributeName;
+		started = true;
+	};
+
+	const stop = () => {
+		handleReset();
+
+		started = false;
+	};
+
 	const handleChange = ({ target }) => {
-		const element = findElement(target);
-		element ? handleElement(element) : handleReset();
+		if (isStarted()) {
+			const element = findElement(target, attributeName);
+			element ? handleElement(element) : handleReset();
+		}
 	};
 
 	document.addEventListener('mouseover', handleChange);
+
+	return { start, stop, isStarted }
 };
 
 const main = async () => {
-	console.log('Hello Content!');
+	const highlighter =	await startHighlight();
 
-	await startHighlight();
+	chrome.runtime.onMessage.addListener(function ({ type, elementPicker, attributeName }, sender, sendResponse) {
+		console.log('listener', { type, elementPicker })
+
+		if (type === 'set-picker') {
+			elementPicker ? highlighter.start(attributeName) : highlighter.stop()
+		}
+
+		if (type === 'get-picker') {
+			sendResponse({ elementPickerState: highlighter.isStarted() })
+		}
+	});
 };
 
 main();

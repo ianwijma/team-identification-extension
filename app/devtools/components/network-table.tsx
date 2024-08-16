@@ -1,17 +1,17 @@
 import { Button, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/react";
 import { useMemo } from "react"
+import { getTeam } from "../../hooks/use-team";
+import { ExtensionSettings, TeamAlias } from "../../lib/extension-settings";
 import { useDevtoolsContext } from "../contexts/devtools";
 import { getTeamFromHeaders } from "../lib/network-tools";
 import { openTeamPopup } from "../lib/open-team-popup";
 import { NetworkEvent } from "../lib/use-network-activity"
 
-type NavigateDataType = 'navigate';
-type RequestDataType = 'request';
-
 type DataItem = {
-    dataType: NavigateDataType | RequestDataType;
-    requestTeamId: string | null;
-    responseTeamId: string | null;
+    requestTeamName: string | null;
+    requestTeamAlias: string | null;
+    responseTeamName: string | null;
+    responseTeamAlias: string | null;
     name: string;
     path: string;
     url: string;
@@ -30,18 +30,26 @@ type DataItem = {
 const getNameFromUrl = (url: URL): string => 
     url.pathname === '/' ? url.hostname : url.pathname.split('/').slice(-1)[0];
 
-const networkEventToDataItem = (event: NetworkEvent): DataItem => {
+const networkEventToDataItem = (event: NetworkEvent, extensionSettings: ExtensionSettings): DataItem => {
     const { time, network } = event;
     const { request, response, _protocol, _resourceType, _request_id, time: duration } = network;
     const { method, url: requestUrl, headers: requestHeaders } = request;
     const { bodySize, status, headers: responseHeaders } = response;
+    const { requestHeaderName, responseHeaderName } = extensionSettings;
 
     const url = new URL(requestUrl);
+
+    const requestTeamAlias = getTeamFromHeaders(requestHeaders, requestHeaderName);
+    const requestTeam = requestTeamAlias ? getTeam(requestTeamAlias, extensionSettings) : null;
+
+    const responseTeamAlias = getTeamFromHeaders(requestHeaders, responseHeaderName);
+    const responseTeam = responseTeamAlias ? getTeam(responseTeamAlias, extensionSettings) : null;
     
     return {
-        dataType: 'request',
-        requestTeamId: getTeamFromHeaders(requestHeaders),
-        responseTeamId: getTeamFromHeaders(responseHeaders),
+        requestTeamAlias,
+        requestTeamName: requestTeam?.name ?? null,
+        responseTeamAlias,
+        responseTeamName: responseTeam?.name ?? null,
         name: getNameFromUrl(url),
         path: url.pathname,
         url: url.toString(),
@@ -58,22 +66,21 @@ const networkEventToDataItem = (event: NetworkEvent): DataItem => {
     }
 }
 
-const dataFilter = (teamIdFilter: string) => (item: DataItem) => 
-    item.requestTeamId === teamIdFilter || item.responseTeamId === teamIdFilter
+const dataFilter = (teamAliasFilter: string) => (item: DataItem) => 
+    item.requestTeamAlias === teamAliasFilter || item.responseTeamAlias === teamAliasFilter
 
 type NetworkTableParams = {
-    teamIdFilter?: string | null
+    teamAliasFilter?: string | null
 }
 
-export const NetworkTable = ({ teamIdFilter = null }: NetworkTableParams) => {
-    const { networkEvents } = useDevtoolsContext();
-    const data = useMemo(() => networkEvents.map(networkEventToDataItem), [networkEvents]);
-    const filteredData = teamIdFilter ? data.filter(dataFilter(teamIdFilter)) : data
+export const NetworkTable = ({ teamAliasFilter = null }: NetworkTableParams) => {
+    const { networkEvents, extensionSettings } = useDevtoolsContext();
+    const data = useMemo(() => networkEvents.map(ev => networkEventToDataItem(ev, extensionSettings)), [networkEvents, extensionSettings]);
+    const filteredData = teamAliasFilter ? data.filter(dataFilter(teamAliasFilter)) : data
 
     const columns: Array<keyof DataItem> = [
-        'dataType',
-        'requestTeamId',
-        'responseTeamId',
+        'requestTeamName',
+        'responseTeamName',
         'name',
         'path',
         'url',
@@ -98,9 +105,20 @@ export const NetworkTable = ({ teamIdFilter = null }: NetworkTableParams) => {
                 {filteredData.map((item, index) => (
                     <TableRow key={index}>
                         {columns.map(column => {
+                            // TODO: Make table work better
                             const value = item[column];
-                            if (column === 'requestTeamId' || column === 'responseTeamId' && value) {
-                                return <TableCell><Button onClick={() => openTeamPopup(value as string)}>{value}</Button></TableCell>
+                            if (column === 'requestTeamName') {
+                                const requestTeamAlias: TeamAlias | null = item['requestTeamAlias'];
+                                if (requestTeamAlias) {
+                                    return <TableCell><Button onClick={() => openTeamPopup(requestTeamAlias)}>{value}</Button></TableCell>
+                                }
+                            }
+
+                            if (column === 'responseTeamName') {
+                                const responseTeamAlias: TeamAlias | null = item['responseTeamAlias'];
+                                if (responseTeamAlias) {
+                                    return <TableCell><Button onClick={() => openTeamPopup(responseTeamAlias)}>{value}</Button></TableCell>
+                                }
                             }
 
                             return <TableCell>{value}</TableCell>

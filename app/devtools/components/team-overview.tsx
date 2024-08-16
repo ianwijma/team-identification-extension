@@ -5,6 +5,7 @@ import { useDevtoolsContext } from "../contexts/devtools";
 import { getTeamFromHeaders } from "../lib/network-tools";
 import { NetworkTable } from "./network-table";
 import { openTeamPopup } from "../lib/open-team-popup";
+import { useTeam } from "../../hooks/use-team";
 
 type TeamObject = {
     requestCount: number;
@@ -15,11 +16,14 @@ type TeamMap = {
 }
 
 type TeamModalProps = {
-    teamId: string;
+    teamAlias: string;
     isOpen: boolean;
     onClose: () => void;
 }
-const TeamModal = ({ teamId, isOpen, onClose }: TeamModalProps) => {
+const TeamModal = ({ teamAlias, isOpen, onClose }: TeamModalProps) => {
+    const { team } = useTeam(teamAlias);
+    const { name = teamAlias } = team ?? {};
+
     return (
         <Modal size='full' isOpen={isOpen} onClose={onClose}>
             <ModalContent>
@@ -27,10 +31,10 @@ const TeamModal = ({ teamId, isOpen, onClose }: TeamModalProps) => {
                     <>
                         {/* TODO: Proper team name */}
                         <ModalHeader className="flex flex-col gap-1">
-                            {teamId} Network Activity
+                            {name} Network Activity
                         </ModalHeader>
                         <ModalBody>
-                            <NetworkTable teamIdFilter={teamId} />
+                            <NetworkTable teamAliasFilter={teamAlias} />
                         </ModalBody>
                     </>
                 )}
@@ -40,19 +44,20 @@ const TeamModal = ({ teamId, isOpen, onClose }: TeamModalProps) => {
 }
 
 type TeamCardProps = {
-    teamId: string;
+    teamAlias: string;
     requestCount: number;
     responseCount: number
 }
-const TeamCard = ({ teamId, requestCount, responseCount }: TeamCardProps) => {
+const TeamCard = ({ teamAlias, requestCount, responseCount }: TeamCardProps) => {
     const {isOpen, onOpen, onClose} = useDisclosure();
+    const { team } = useTeam(teamAlias);
+    const { name = teamAlias } = team ?? {};
 
 
     return (
         <Card className="min-w-64 grow">
             <CardHeader>
-                {/* TODO: Convert to a proper name */}
-                {teamId}
+                {name}
             </CardHeader>
             <Divider />
             <CardBody>
@@ -70,30 +75,30 @@ const TeamCard = ({ teamId, requestCount, responseCount }: TeamCardProps) => {
                 </div>
             </CardBody>
             <CardFooter className='flex justify-evenly'>
-                <TeamModal {...{teamId, isOpen, onClose}} />
+                <TeamModal {...{teamAlias, isOpen, onClose}} />
                 <Button onClick={onOpen}>Network Activity</Button>
-                <Button onClick={() => openTeamPopup(teamId)}>Show Team</Button>
+                <Button onClick={() => openTeamPopup(teamAlias)}>Show Team</Button>
             </CardFooter>
         </Card>
     )
 }
 
 export const TeamOverview = () => {
-    const { networkEvents } = useDevtoolsContext();
+    const { networkEvents, extensionSettings } = useDevtoolsContext();
     const teamMap = networkEvents.reduce((teamMap, networkEvent) => {
-        const addTeamMap = (teamId: string, target: keyof TeamObject) => {
-            if(!(teamId in teamMap)) {
-                teamMap[teamId] = {
+        const addTeamMap = (teamAlias: string, target: keyof TeamObject) => {
+            if(!(teamAlias in teamMap)) {
+                teamMap[teamAlias] = {
                     requestCount: 0,
                     responseCount: 0,
                 };
             }
 
-            if (!(target in teamMap[teamId])) {
-                teamMap[teamId][target] = 0
+            if (!(target in teamMap[teamAlias])) {
+                teamMap[teamAlias][target] = 0
             }
 
-            teamMap[teamId][target]++
+            teamMap[teamAlias][target]++
         }
 
         const { network } = networkEvent;
@@ -101,18 +106,20 @@ export const TeamOverview = () => {
         const { headers: requestHeaders } = request;
         const { headers: responseHeaders } = response;
 
-        const requestTeamId = getTeamFromHeaders(requestHeaders);
-        if (requestTeamId) addTeamMap(requestTeamId, 'requestCount')
+        const { requestHeaderName, responseHeaderName } = extensionSettings;
 
-        const responseTeamId = getTeamFromHeaders(responseHeaders);
-        if (responseTeamId) addTeamMap(responseTeamId, 'responseCount')
+        const requestTeamAlias = getTeamFromHeaders(requestHeaders, requestHeaderName);
+        if (requestTeamAlias) addTeamMap(requestTeamAlias, 'requestCount')
+
+        const responseTeamAlias = getTeamFromHeaders(responseHeaders, responseHeaderName);
+        if (responseTeamAlias) addTeamMap(responseTeamAlias, 'responseCount')
 
         return teamMap;
     }, {} as TeamMap)
 
     return (
         <div className="flex flex-wrap gap-3 mx-3">
-            {Object.keys(teamMap).map(teamId => <TeamCard key={teamId} teamId={teamId} { ...teamMap[teamId] } />)}
+            {Object.keys(teamMap).map(teamAlias => <TeamCard key={teamAlias} teamAlias={teamAlias} { ...teamMap[teamAlias] } />)}
         </div>
     )
 }
