@@ -63,3 +63,11 @@ Made a change? Build the extension again, reload extension, test out change.
 ## Test page Devloo
 
 Serve example pages, run `npx serve` in the `/examples` dir.
+
+## Projects used
+
+NextJS: https://nextjs.org/
+NextUI: https://nextui.org/
+FontAwesome: https://fontawesome.com/
+Formik: https://formik.org/
+Yup: https://github.com/jquense/yup
