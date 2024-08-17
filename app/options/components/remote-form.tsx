@@ -62,7 +62,7 @@ export const RemoteForm = () => {
                         actions.setSubmitting(false);
                     }}
                 >
-                    {({ errors, touched }) => (
+                    {({ errors, touched, values }) => (
                         <Form>
                             <Field name='useRemote'>
                                 {
@@ -89,7 +89,9 @@ export const RemoteForm = () => {
                                 }
                             </Field>
                             <Divider className="my-3" />
-                            <Button type="submit" className='mr-3'>Save</Button>
+                            <Button type="submit" className='mr-3'>
+                                {values.useRemote ? 'Save & Fetch Remote Config' : 'Save'}
+                            </Button>
                             <Button type="button" color="danger" onClick={() => confirmResetSettings()}>Reset all settings</Button>
                         </Form>
                     )}

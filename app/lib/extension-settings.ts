@@ -1,4 +1,5 @@
 import 'react';
+import { localSettingsSchema } from '../options/lib/local-settings';
 
 export type TeamAlias = string;
 export type Team = {
@@ -28,7 +29,7 @@ export const defaultExtensionSettings: ExtensionSettings = {
 }
 
 export const getExtensionSettings = (): Promise<ExtensionSettings> => new Promise((resolve) => {
-    console.log('[settings] fetching');
+    console.log('[settings] getting');
     chrome.storage.sync.get(
         defaultExtensionSettings,
         (settings) => resolve(settings as ExtensionSettings)
@@ -36,7 +37,7 @@ export const getExtensionSettings = (): Promise<ExtensionSettings> => new Promis
 });
 
 export const setExtensionSettings = (settings: ExtensionSettings): Promise<ExtensionSettings> => new Promise((resolve) => {
-    console.log('[settings] saving', { settings });
+    console.log('[settings] setting', { settings });
     chrome.storage.sync.set(
         settings,
         () => resolve(settings)
@@ -51,5 +52,39 @@ export const resetExtensionSettings = (): Promise<ExtensionSettings> => new Prom
     )
 });
 
+export const refetchFromRemoteExtensionSettings = async () => {
+    const settings = await getExtensionSettings();
+    const updatedSettings = await updateFromRemoteExtensionSettings(settings);
+    await setExtensionSettings(updatedSettings);
+}
 
+export const updateFromRemoteExtensionSettings = async (newSettings: ExtensionSettings) => {
+    console.log('[settings] fetching remote');
+
+    const throwError = (message: string) => {
+        throw new Error(`Settings not saved, error with remote config: ${message}`)
+    }
+
+    try {
+        const { remoteUrl } = newSettings;
+        const response = await fetch(remoteUrl);
+        const remoteSettings = await response.json();
+        const { teams = [], ...validatedRemoteSettings } = await localSettingsSchema.validate(remoteSettings, { strict: true });
+        const teamMap = teams.reduce((map, team) => {
+            map[team.alias] = team;
+
+            return map;
+        }, {} as TeamMap);
+
+        await setExtensionSettings({ ...newSettings, ...validatedRemoteSettings, teamMap })
+    } catch (error) {
+        if (error instanceof Error) {
+            throwError(error.message)
+        }
+
+        throwError(String(error));
+    }
+
+    return getExtensionSettings();
+}
 

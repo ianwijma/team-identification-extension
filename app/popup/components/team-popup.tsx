@@ -14,14 +14,18 @@ export const TeamPopup = ({ teamAlias }: TeamPopupParams) => {
         <Modal className='rounded-none' isOpen={true}>
             <ModalHeader>
                 <div>
-                    {name}
-                    <br />
-                    <small className="text-gray-500">({alias})</small>
+                    {name ? name : teamAlias}
+                    {alias ? (
+                        <>
+                            <br />
+                            <small className="text-gray-500">({alias})</small>
+                        </>
+                    ) : ''}
                 </div>
             </ModalHeader>
             <ModalBody>
                 <p>
-                    {description}
+                    {description ? description : <small>No team description</small>}
                 </p>
             </ModalBody>
         </Modal>

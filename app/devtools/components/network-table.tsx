@@ -5,7 +5,7 @@ import { ExtensionSettings, TeamAlias } from "../../lib/extension-settings";
 import { useDevtoolsContext } from "../contexts/devtools";
 import { getTeamFromHeaders } from "../lib/network-tools";
 import { openTeamPopup } from "../lib/open-team-popup";
-import { NetworkEvent } from "../lib/use-network-activity"
+import { NetworkEvent } from "../hooks/use-network-activity"
 
 type DataItem = {
     requestTeamName: string | null;
@@ -47,9 +47,9 @@ const networkEventToDataItem = (event: NetworkEvent, extensionSettings: Extensio
     
     return {
         requestTeamAlias,
-        requestTeamName: requestTeam?.name ?? null,
+        requestTeamName: requestTeam?.name ?? requestTeamAlias ?? null,
         responseTeamAlias,
-        responseTeamName: responseTeam?.name ?? null,
+        responseTeamName: responseTeam?.name ?? responseTeamAlias ?? null,
         name: getNameFromUrl(url),
         path: url.pathname,
         url: url.toString(),

@@ -1,6 +1,5 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from "react";
-import { defaultExtensionSettings, ExtensionSettings, getExtensionSettings, resetExtensionSettings, setExtensionSettings, TeamMap } from "../../lib/extension-settings";
-import { localSettingsSchema } from "../lib/local-settings";
+import { defaultExtensionSettings, ExtensionSettings, getExtensionSettings, resetExtensionSettings, setExtensionSettings, TeamMap, updateFromRemoteExtensionSettings } from "../../lib/extension-settings";
 
 type SetFunction<T> = (newValue: T) => void
 type BlankFunction = () => void
@@ -30,55 +29,32 @@ export const useSettingsContext = () => useContext(SettingsContext);
 
 export const SettingsContextProvider = ({ children }: PropsWithChildren) => {
     const [loading, setLoading] = useState(true);
+    const [remoteSettingsErrror, setRemoteSettingsErrror] = useState<null | string>(null);
     // Loading is too quick, we need to show off the forms skeletons a bit.
     const setLoadingDelayed = (newLoading: boolean) => setTimeout(() => setLoading(newLoading), 500);
     const [settings, setSettings] = useState(defaultExtensionSettings);
 
-    const [remoteSettingsErrror, setRemoteSettingsErrror] = useState<null | string>(null);
-    const updateRemoteSettingsError = (message?: string) => {
-        if (message) {
-            setRemoteSettingsErrror(`Settings not saved, error with remote config: ${message}`)
-        } else {
-            setRemoteSettingsErrror(null);
-        }
-    }
-
-    const parseSettings = async (newSettings: ExtensionSettings) => {
-        updateRemoteSettingsError();
-
-        const { useRemote, remoteUrl } = newSettings;
-        if (useRemote && remoteUrl) {
-            try {
-                const response = await fetch(remoteUrl);
-                const remoteSettings = await response.json();
-                const { teams = [], ...validatedRemoteSettings } = await localSettingsSchema.validate(remoteSettings, { strict: true });
-                const teamMap = teams.reduce((map, team) => {
-                    map[team.alias] = team;
-
-                    return map;
-                }, {} as TeamMap);
-                
-                return { ...newSettings, ...validatedRemoteSettings, teamMap };
-            } catch (error) {
-                if (error instanceof Error) {
-                    updateRemoteSettingsError(error.message)
-                }
-
-                updateRemoteSettingsError(String(error));
-
-                return settings;
-            }
-        }
-
-        return newSettings;
-    }
-
     const updateSettings = async (newSettings: ExtensionSettings) => {
         setLoading(true);
 
-        const parsedSettings = await parseSettings(newSettings);
-    
-        setExtensionSettings(parsedSettings).then((updatedSettings) => {
+        setRemoteSettingsErrror(null);
+
+        const { useRemote, remoteUrl } = newSettings;
+
+        if (useRemote && remoteUrl) {
+            try {
+                newSettings = await updateFromRemoteExtensionSettings(newSettings);
+            } catch (error) {
+                console.error(error);
+                if (error instanceof Error) {
+                    setRemoteSettingsErrror(error.message);
+                } else {
+                    setRemoteSettingsErrror('Something went wrong');
+                }
+            }
+        }
+
+        setExtensionSettings(newSettings).then((updatedSettings) => {
             setSettings(updatedSettings);
             setLoadingDelayed(false)
         });

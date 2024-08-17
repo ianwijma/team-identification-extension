@@ -18,7 +18,7 @@ export const TabPopup = ({ currentTab }: TabPopupParam) => {
         const newElementPicker = !elementPicker;
         if (tabId) {
             chrome.tabs.sendMessage(tabId, { type: 'set-picker', elementPicker: newElementPicker, attributeName: elementAttributeName }, function(){
-                setElementPicker(newElementPicker)
+                setElementPicker(newElementPicker);
             });
         }
     }
@@ -26,7 +26,7 @@ export const TabPopup = ({ currentTab }: TabPopupParam) => {
     useEffect(() => {
         if (tabId) {
             chrome.tabs.sendMessage(tabId, { type: 'get-picker' }, function({ elementPickerState = false }){
-                setElementPicker(elementPickerState)
+                setElementPicker(elementPickerState);
             });
         }
     }, [])

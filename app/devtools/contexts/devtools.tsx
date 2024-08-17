@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { createContext, PropsWithChildren } from "react";
 import { defaultExtensionSettings, ExtensionSettings, getExtensionSettings } from "../../lib/extension-settings";
-import { NetworkEvent, useNetworkActivity } from "../lib/use-network-activity";
+import { NetworkEvent, useNetworkActivity } from "../hooks/use-network-activity";
 
 type SetFunction<T> = (newValue: T) => void
 type BlankFunction = () => void

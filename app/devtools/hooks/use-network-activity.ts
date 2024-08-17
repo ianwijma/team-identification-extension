@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getNetworkActivity, NetworkRequest } from "./network-activity"
+import { getNetworkActivity, NetworkRequest } from "../lib/network-activity"
 
 export type NetworkEvent = {
     time: number,
