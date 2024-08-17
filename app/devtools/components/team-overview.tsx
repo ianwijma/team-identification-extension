@@ -25,7 +25,7 @@ const TeamModal = ({ teamAlias, isOpen, onClose }: TeamModalProps) => {
     const { name = teamAlias } = team ?? {};
 
     return (
-        <Modal size='full' isOpen={isOpen} onClose={onClose}>
+        <Modal size='full' className="bg-background" isOpen={isOpen} onClose={onClose}>
             <ModalContent>
                 {() => (
                     <>
@@ -33,7 +33,7 @@ const TeamModal = ({ teamAlias, isOpen, onClose }: TeamModalProps) => {
                         <ModalHeader className="flex flex-col gap-1">
                             {name} Network Activity
                         </ModalHeader>
-                        <ModalBody>
+                        <ModalBody className="max-h-[95vh] overflow-y-scroll overflow-x-hidden">
                             <NetworkTable teamAliasFilter={teamAlias} />
                         </ModalBody>
                     </>

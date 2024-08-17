@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, CardHeader } from "@nextui-org/react";
+import { Button, Card, ModalBody, ModalFooter, Modal, ModalHeader } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { useExtensionSettings } from "../../hooks/use-extension-settings";
 import { Tab } from "../../hooks/use-tab-query";
@@ -32,18 +32,18 @@ export const TabPopup = ({ currentTab }: TabPopupParam) => {
     }, [])
 
     return (
-        <Card className='rounded-none'>
-            <CardHeader>
-                <h1>Team Identification Extension</h1>
-            </CardHeader>
-            <CardBody>
+        <Modal className='rounded-none' isOpen={true}>
+            <ModalHeader>
+                Team Identification Extension
+            </ModalHeader>
+            <ModalBody>
 
-            </CardBody>
-            <CardFooter>
+            </ModalBody>
+            <ModalFooter>
                 <Button color={elementPicker ? 'danger' : 'success'} onClick={toggleElementPicker}>
                     {`${elementPicker ? 'Disable' : 'Enable'} element picker`}
                 </Button>
-            </CardFooter>
-        </Card>
+            </ModalFooter>
+        </Modal>
     )
 }

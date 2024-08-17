@@ -14,7 +14,7 @@
             "description": "This frontend team owns the Hello World elements"
         },
         {
-            "alias": "fe-t34m-su",
+            "alias": "fs-t34m-su",
             "name": "[FS] Team Sign Up",
             "description": "This full stack team owns the sign up button"
         },

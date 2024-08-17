@@ -6,6 +6,7 @@ import { useCurrentTab } from "../hooks/use-current-tab";
 import { TeamAlias } from "../lib/extension-settings";
 import { TabPopup } from "./components/tab-popup";
 import { TeamPopup } from "./components/team-popup";
+import { UnsupportedPopup } from "./components/unsupported-popup";
 
 
 export const PopupContent = () => {
@@ -26,9 +27,5 @@ export const PopupContent = () => {
         return <TabPopup currentTab={currentTab} />
     }
 
-    return (
-        <div>
-            Nothing to do here
-        </div>
-    )
+    return <UnsupportedPopup />
 }

@@ -1,4 +1,4 @@
-import { Card, CardBody, CardHeader } from "@nextui-org/react"
+import { Modal, ModalBody, ModalHeader } from "@nextui-org/react"
 import { useTeam } from "../../hooks/use-team"
 import { TeamAlias } from "../../lib/extension-settings"
 
@@ -11,19 +11,19 @@ export const TeamPopup = ({ teamAlias }: TeamPopupParams) => {
     const { name, description, alias } = team ?? {};
 
     return (
-        <Card className='rounded-none'>
-            <CardHeader>
-                <h1>
+        <Modal className='rounded-none' isOpen={true}>
+            <ModalHeader>
+                <div>
                     {name}
-                    {' '}
+                    <br />
                     <small className="text-gray-500">({alias})</small>
-                </h1>
-            </CardHeader>
-            <CardBody>
+                </div>
+            </ModalHeader>
+            <ModalBody>
                 <p>
                     {description}
                 </p>
-            </CardBody>
-        </Card>
+            </ModalBody>
+        </Modal>
     )
 }
